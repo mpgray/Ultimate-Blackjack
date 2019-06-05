@@ -1,5 +1,7 @@
 package blackjack;
 
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -16,5 +18,14 @@ public class Main {
         System.out.println(player.toString());
         System.out.println(deck.toString());
         System.out.println(player.total());
+
+        try {
+            TableGUI table = new TableGUI();
+            table.setVisible(true);
+            table.print(player.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
