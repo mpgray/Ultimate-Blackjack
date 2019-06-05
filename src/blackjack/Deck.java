@@ -38,11 +38,12 @@ public class Deck {
     }
 
     public Card draw() {
-        Card drew = null;
-        
-        if (left > 1) {
-            drew = deck[--left];
+
+        if (left == 0) {
+            shuffle();
+            left = 52;
         }
+        Card drew = deck[--left];
 
         return drew;
     }
@@ -53,7 +54,7 @@ public class Deck {
     public String toString() {
         StringBuilder display = new StringBuilder();
         for (Card card : deck) {
-            display.append("[").append(card.face).append(card.suit.value).append(card.value).append("]");
+            display.append("[").append(card.face).append(card.suit.value).append("(").append(card.value).append(")]");
 
         }
         return display + "";
