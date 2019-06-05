@@ -13,6 +13,7 @@ public class Hand {
         this.ace = 0;
     }
 
+
     public void deal(Card card) {
         hand.add(card);
         if (card.face == Card.Face.ACE) {
@@ -21,18 +22,22 @@ public class Hand {
         this.total += card.value;
     }
 
-    public short total(){
-        if (ace > 1 && total > 21) {
-            ace--;
-            total -= 10;
+    public String total(){
+        if (ace > 0) {
+            if (this.total < 21) {
+                return this.total + "(" + (this.total - 10) + ")";
+            } else {
+                ace--;
+                this.total -= 10;
+            }
         }
-        return this.total;
+        return String.valueOf(this.total);
     }
 
     public void muck() {
-        hand.clear();
-        total = 0;
-        ace = 0;
+        this.hand.clear();
+        this.total = 0;
+        this.ace = 0;
     }
 
     @Override
