@@ -10,12 +10,15 @@ public class TableGUI extends JFrame implements ActionListener {
     private JLayeredPane contentPane;
     private JTextArea chatFieldTXT;
     private JTextField submitFieldTXT;
-    private JButton sendButton;
+    private JButton sendButton, hitButton;
     private JScrollPane scrollChatTxt;
+
+    private Game blackjack = new Game();
 
     public TableGUI(){
         create();
         chat();
+        move();
 
         this.setTitle("Ultimate Blackjack");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,6 +34,18 @@ public class TableGUI extends JFrame implements ActionListener {
         contentPane.setBackground(new Color(50, 100, 50));
         contentPane.setLayout(null);
         contentPane.setOpaque(true);
+    }
+
+    private void move(){
+        hitButton = new JButton(" Hit ");
+        hitButton.setEnabled(true);
+        hitButton.setBounds(15, 35, 84, 25);
+        hitButton.addActionListener(evt -> {
+            blackjack.hit();
+            this.print(blackjack.player.toString());
+        });
+
+        contentPane.add(hitButton,JLayeredPane.MODAL_LAYER);
     }
 
     private void chat(){
@@ -55,8 +70,15 @@ public class TableGUI extends JFrame implements ActionListener {
     }
 
     public void print(String message){
-        chatFieldTXT.append("[Dealer]: " + message + "\n");
+        chatFieldTXT.append("[[System]]" + message + "\n");
     }
+
+    public void game(){
+        blackjack.start();
+        this.print("[Dealer]: " + blackjack.dealer.toString());
+        this.print("[Player]: " + blackjack.player.toString());
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
