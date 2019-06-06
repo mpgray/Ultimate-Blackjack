@@ -10,7 +10,7 @@ public class Main {
         try {
             TableGUI table = new TableGUI();
             table.setVisible(true);
-            table.game();
+
         } catch (Exception e) {
             e.printStackTrace();
         }

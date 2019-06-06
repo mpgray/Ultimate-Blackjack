@@ -10,7 +10,7 @@ public class TableGUI extends JFrame implements ActionListener {
     private JLayeredPane contentPane;
     private JTextArea chatFieldTXT;
     private JTextField submitFieldTXT;
-    private JButton sendButton, hitButton;
+    private JButton sendButton, hitButton, dealButton, stayButton, doubleButton, splitButton, insuranceButton, readyButton;
     private JScrollPane scrollChatTxt;
 
     private Game blackjack = new Game();
@@ -37,15 +37,65 @@ public class TableGUI extends JFrame implements ActionListener {
     }
 
     private void move(){
+        dealButton = new JButton(" Deal ");
+        dealButton.setBounds(15, 35, 100, 25);
+        dealButton.addActionListener(evt -> {
+            blackjack.start();
+            this.print("[Dealer]: " + blackjack.dealer.toString());
+            this.print("[Player]: " + blackjack.player.toString());
+            dealButton.setVisible(false);
+        });
+
         hitButton = new JButton(" Hit ");
-        hitButton.setEnabled(true);
-        hitButton.setBounds(15, 35, 84, 25);
+        hitButton.setBounds(15, 60, 100, 25);
         hitButton.addActionListener(evt -> {
             blackjack.hit();
             this.print(blackjack.player.toString());
         });
 
+        stayButton = new JButton(" Stay ");
+        stayButton.setBounds(15, 85, 100, 25);
+        stayButton.addActionListener(evt -> {
+            blackjack.stay();
+            this.print(blackjack.player.toString());
+        });
+
+        doubleButton = new JButton(" Double ");
+        doubleButton.setBounds(15, 110, 100, 25);
+        doubleButton.addActionListener(evt -> {
+            blackjack.onecard();
+            this.print(blackjack.player.toString());
+        });
+
+        splitButton = new JButton(" Split ");
+        splitButton.setBounds(15, 135, 100, 25);
+        splitButton.addActionListener(evt -> {
+            blackjack.split();
+            this.print(blackjack.player.toString());
+        });
+
+        insuranceButton = new JButton(" Insurance ");
+        insuranceButton.setBounds(15, 160, 140, 25);
+        insuranceButton.addActionListener(evt -> {
+            blackjack.insurance();
+            this.print(blackjack.player.toString());
+        });
+
+        readyButton = new JButton(" Ready ");
+        readyButton.setBounds(15, 185, 100, 25);
+        readyButton.addActionListener(evt -> {
+            this.print(blackjack.results());
+            this.print("Dealer: " + blackjack.dealer.toString());
+            dealButton.setVisible(true);
+        });
+
+        contentPane.add(dealButton,JLayeredPane.MODAL_LAYER);
         contentPane.add(hitButton,JLayeredPane.MODAL_LAYER);
+        contentPane.add(stayButton,JLayeredPane.MODAL_LAYER);
+        contentPane.add(doubleButton,JLayeredPane.MODAL_LAYER);
+        contentPane.add(splitButton,JLayeredPane.MODAL_LAYER);
+        contentPane.add(insuranceButton,JLayeredPane.MODAL_LAYER);
+        contentPane.add(readyButton,JLayeredPane.MODAL_LAYER);
     }
 
     private void chat(){
@@ -69,14 +119,8 @@ public class TableGUI extends JFrame implements ActionListener {
         contentPane.add(sendButton,JLayeredPane.MODAL_LAYER);
     }
 
-    public void print(String message){
+    private void print(String message){
         chatFieldTXT.append("[[System]]" + message + "\n");
-    }
-
-    public void game(){
-        blackjack.start();
-        this.print("[Dealer]: " + blackjack.dealer.toString());
-        this.print("[Player]: " + blackjack.player.toString());
     }
 
 
