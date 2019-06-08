@@ -8,8 +8,9 @@ public class Main {
 
 
         try {
-            TableGUI table = new TableGUI();
+            TableGUI table = new TableGUI(new Game());
             table.setVisible(true);
+            table.run();
 
         } catch (Exception e) {
             e.printStackTrace();
