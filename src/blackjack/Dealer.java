@@ -5,9 +5,6 @@ public class Dealer {
     private Deck deck;
     private boolean isHoleVisable = false;
 
-    //RULES
-    private boolean HITSOFT17 = true;
-    private boolean SURRENDER = false;
 
     Dealer(Deck deck) {
         this.deck = deck;
@@ -38,7 +35,10 @@ public class Dealer {
 
     @Override
     public String toString() {
-        return holeCard() + hand.toString();
+        if (hand.hand.size() > 0) {
+            return holeCard() + hand.toString();
+        }
+        return "";
     }
 
 }

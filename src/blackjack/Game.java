@@ -12,6 +12,7 @@ public class Game {
     private List<Player> players = new ArrayList<>();
     public Player player;
 
+
     private HandGUI handGUI;
 
     public Game() {
@@ -33,12 +34,28 @@ public class Game {
         this.player.deal();
         this.player.deal();
 
-
+        this.blackJack();
     }
 
-    public List<JLabel> handLBL() {
+    private void blackJack() {
+        if (this.player.hand.total == 21) {
+
+        }
+    }
+
+    public JLabel playerLBL() {
         handGUI = new HandGUI(player.hand);
         return handGUI.hand();
+    }
+
+    public JLabel dealerLBL() {
+        handGUI = new HandGUI(dealer.hand);
+        return handGUI.hand();
+    }
+
+    public JLabel downCardLBL() {
+        handGUI = new HandGUI(dealer.hand);
+        return handGUI.downCard();
     }
 
 
@@ -93,15 +110,17 @@ public class Game {
     }
 
     private String win() {
-        return "You win";
+        player.setStake(5);
+        return "You win! Total Chips " + player.getStake();
     }
 
     private String loose() {
-        return "You lost";
+        player.setStake(-5);
+        return "You lost. Total Chips " + player.getStake();
     }
 
     private String push() {
-        return "You push";
+        return "You push. Total Chips " + player.getStake();
 
     }
 

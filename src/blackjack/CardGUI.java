@@ -2,19 +2,24 @@ package blackjack;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class CardGUI extends JFrame {
 
-    private JLabel cardLBL;
+
 
     public CardGUI() {
-        this.cardLBL = new JLabel();
 
     }
 
+    public JLabel downCard(int width, int height) {
+        JLabel cardLBL = new JLabel();
+        String path = "cards/downHole.png";
+        cardLBL.setIcon(scale(createImageIcon(path), width, height));
+        return cardLBL;
+    }
+
     public JLabel card(Card card, int width, int height) {
+        JLabel cardLBL = new JLabel();
         String path = "cards/" + card.face.name + "-" + card.suit.name + ".png";
         cardLBL.setIcon(scale(createImageIcon(path), width, height));
         return cardLBL;
