@@ -79,6 +79,7 @@ public class TableGUI extends JFrame {
 
         doubleButton = new JButton(" Double ");
         doubleButton.setBounds(15, 110, 100, 25);
+        doubleButton.setEnabled(false);
         doubleButton.addActionListener(evt -> {
             if(!blackjack.onecard()){
                 this.endTurn();
@@ -89,6 +90,7 @@ public class TableGUI extends JFrame {
 
         splitButton = new JButton(" Split ");
         splitButton.setBounds(15, 135, 100, 25);
+        splitButton.setEnabled(false);
         splitButton.addActionListener(evt -> {
             if(!blackjack.split()){
                 this.endTurn();
@@ -98,6 +100,7 @@ public class TableGUI extends JFrame {
 
         insuranceButton = new JButton(" Insurance ");
         insuranceButton.setBounds(15, 160, 140, 25);
+        insuranceButton.setEnabled(false);
         insuranceButton.addActionListener(evt -> {
             if(!blackjack.insurance()) {
                 this.endTurn();

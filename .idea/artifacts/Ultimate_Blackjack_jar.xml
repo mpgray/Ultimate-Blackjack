@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Ultimate-Blackjack:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ultimate_Blackjack_jar</output-path>
+    <root id="archive" name="Ultimate-Blackjack.jar">
+      <element id="module-output" name="Ultimate-Blackjack" />
+    </root>
+  </artifact>
+</component>
