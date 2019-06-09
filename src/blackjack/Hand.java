@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Hand {
     public List<Card> hand = new ArrayList<>();
-    private short total;
+    public short total;
     public int ace;
 
     public Hand(){
@@ -20,19 +20,15 @@ public class Hand {
             ace++;
         }
         this.total += card.value;
-    }
 
-    public String total(){
         if (ace > 0) {
-            if (this.total < 21) {
-                return this.total + "(" + (this.total - 10) + ")";
-            } else {
+            if (this.total > 21) {
                 ace--;
                 this.total -= 10;
             }
         }
-        return String.valueOf(this.total);
     }
+
 
     public void muck() {
         this.hand.clear();
@@ -43,8 +39,8 @@ public class Hand {
     @Override
     public String toString() {
         StringBuilder display = new StringBuilder();
-        for (int i = 0; i < hand.size(); i++) {
-            display.append("[").append(hand.get(i).face).append(hand.get(i).suit.value).append("(").append(hand.get(i).value).append(")]");
+        for (int i = 1; i < hand.size(); i++) {
+            display.append("[").append(hand.get(i).face.name).append(hand.get(i).suit.value).append("]");
         }
         return display + "";
     }

@@ -29,10 +29,10 @@ public class Deck {
         Random rand = ThreadLocalRandom.current();
         for (int i = deck.length - 1; i > 0; i--)
         {
-            int index = rand.nextInt(i + 1);
+            int j = rand.nextInt(i + 1);
             // Simple swap
-            Card swap = deck[index];
-            deck[index] = deck[i];
+            Card swap = deck[j];
+            deck[j] = deck[i];
             deck[i] = swap;
         }
     }
