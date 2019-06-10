@@ -3,7 +3,7 @@ package blackjack;
 public class Stake {
     private Chip chips = new Chip();
 
-    private double total = 1000;
+    private double total = 100;
 
 
     public double getTotal() {

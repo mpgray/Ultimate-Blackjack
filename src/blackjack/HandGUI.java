@@ -24,25 +24,25 @@ public class HandGUI extends JFrame {
         handLBL.add(this.total());
 
         int x = 0;
-        for (int i = 0; i < hand.hand.size(); i++) {
-
+        for (int i = hand.hand.size() - 1; i >= 0; i--) {
+            x = 30 * i;
             JLabel cardLBL;
             cardLBL = cardGUI.card(hand.hand.get(i), 90,125);
             cardLBL.setBounds(x,70, 90, 125);
             cardLBLs.add(cardLBL);
-            x += 30;
+
         }
-
-
 
         int size = cardLBLs.size();
         for(int i = 0; i < size; i++) {
             handLBL.add(cardLBLs.get(i));
         }
 
-
         return handLBL;
     }
+
+
+
 
     private JLabel total() {
         this.setLayout(new GridLayout(1, 1, 5, 5));

@@ -15,8 +15,8 @@ public class TableGUI extends JFrame {
     private JLabel dealerHandLBL = new JLabel();
     private JLabel downCardLBL = new JLabel();
     private JLabel handLBL = new JLabel();
-
     private ChatGUI chatGUI = new ChatGUI();
+
 
     public TableGUI(Game blackjack){
 
@@ -38,11 +38,12 @@ public class TableGUI extends JFrame {
         contentPane.setLayout(null);
         contentPane.setOpaque(true);
 
-        JLabel stake = new JLabel();
 
-        stakeLBL.setText("Total: " + blackjack.player.getStake());
-        stakeLBL.setBounds(775,350, 150, 30);
+        stakeLBL.setText("Chips: " + blackjack.player.getStake() + " Bet: " + blackjack.player.getBet().total);
+        stakeLBL.setBounds(725,350, 175, 30);
         contentPane.add(stakeLBL, JLayeredPane.MODAL_LAYER);
+
+        contentPane.add(this.blackjack.messageLBL("Welcome to Blackjack"), JLayeredPane.POPUP_LAYER);
         contentPane.add(chatGUI.chat(), JLayeredPane.MODAL_LAYER);
     }
 
@@ -64,6 +65,7 @@ public class TableGUI extends JFrame {
             if(!blackjack.hit()) {
                 this.endTurn();
             }
+            doubleButton.setVisible(false);
             this.hand();
             chatGUI.systemText(blackjack.player);
         });
@@ -79,7 +81,6 @@ public class TableGUI extends JFrame {
 
         doubleButton = new JButton(" Double ");
         doubleButton.setBounds(15, 110, 100, 25);
-        doubleButton.setEnabled(false);
         doubleButton.addActionListener(evt -> {
             if(!blackjack.onecard()){
                 this.endTurn();
@@ -120,7 +121,10 @@ public class TableGUI extends JFrame {
         betButton.setBounds(770,395,115,115);
        // betButton.setOpaque(false);
         betButton.addActionListener(evt -> {
+            blackjack.player.setBet(blackjack.player.getBet().total + 5);
+
             blackjack.start();
+
             this.beginGame();
             this.hand();
             chatGUI.systemText(blackjack.player);
@@ -132,7 +136,6 @@ public class TableGUI extends JFrame {
         doubleButton.setVisible(false);
         splitButton.setVisible(false);
         insuranceButton.setVisible(false);
-
 
         contentPane.add(dealButton,JLayeredPane.MODAL_LAYER);
         contentPane.add(hitButton,JLayeredPane.MODAL_LAYER);
@@ -151,6 +154,15 @@ public class TableGUI extends JFrame {
         stayButton.setVisible(true);
         doubleButton.setVisible(true);
 
+        this.blackjack.messageLBL.messageAlert.setText("");
+
+        downCardLBL = blackjack.downCardLBL();
+        downCardLBL.setBorder(BorderFactory.createEmptyBorder( 80 , 0, 0, 0 ));
+        downCardLBL.setBackground(new Color(50, 100, 50));
+        downCardLBL.setOpaque(true);
+        downCardLBL.setBounds(300,0, 90, 205);
+        contentPane.add(downCardLBL, JLayeredPane.MODAL_LAYER);
+
         if (blackjack.player.hand.hand.get(0).value == blackjack.player.hand.hand.get(1).value) {
             splitButton.setVisible(true);
         }
@@ -163,14 +175,7 @@ public class TableGUI extends JFrame {
             }
         }
 
-        downCardLBL = blackjack.downCardLBL();
-        downCardLBL.setBorder(BorderFactory.createEmptyBorder( 80 /*top*/, 0, 0, 0 ));
-        downCardLBL.setBackground(new Color(50, 100, 50));
-        downCardLBL.setOpaque(true);
-        downCardLBL.setBounds(300,0, 90, 205);
-        contentPane.add(downCardLBL, JLayeredPane.MODAL_LAYER);
-
-
+        stakeLBL.setText("Chips: " + blackjack.player.getStake() + " Bet: " + blackjack.player.getBet().total);
     }
 
     private void endTurn(){
@@ -183,12 +188,13 @@ public class TableGUI extends JFrame {
         splitButton.setVisible(false);
         insuranceButton.setVisible(false);
 
-
         contentPane.remove(downCardLBL);
         this.dealerTurn();
 
         chatGUI.print(blackjack.results());
-        stakeLBL.setText("Total: " + blackjack.player.getStake());
+        stakeLBL.setText("Chips: " + blackjack.player.getStake() + " Bet: " + blackjack.player.getBet().total);
+
+        this.blackjack.player.clearBet();
     }
 
     private void dealerTurn() {
@@ -203,11 +209,13 @@ public class TableGUI extends JFrame {
         chatGUI.systemText(blackjack.dealer);
     }
 
+
     private void hand() {
 
         this.dealerTurn();
 
         contentPane.remove(handLBL);
+
 
         contentPane.revalidate();
         contentPane.repaint();

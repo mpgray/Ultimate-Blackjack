@@ -14,6 +14,7 @@ public class Game {
 
 
     private HandGUI handGUI;
+    public MessageGUI messageLBL = new MessageGUI();;
 
     public Game() {
         this.addPlayer();
@@ -38,8 +39,8 @@ public class Game {
     }
 
     private void blackJack() {
-        if (this.player.hand.total == 21) {
-
+        if (this.player.hand.total == 21 && this.dealer.hand.hand.get(1).face != Card.Face.ACE && this.dealer.hand.total != 21) {
+            this.player.setStake(this.player.getBet().total * 2.5);
         }
     }
 
@@ -58,6 +59,10 @@ public class Game {
         return handGUI.downCard();
     }
 
+    public JLabel messageLBL(String message) {
+
+        return  messageLBL.message(message);
+    }
 
     private void addPlayer() {
         this.players.add(new Player(deck));
@@ -78,8 +83,11 @@ public class Game {
     }
 
     public boolean onecard() {
-        player.deal();
-        this.done();
+        if (this.player.getBet().total <= this.player.getStake()) {
+            this.player.addBet(this.player.getBet().total);
+            this.player.deal();
+            this.done();
+        }
         return false;
     }
 
@@ -90,6 +98,7 @@ public class Game {
     public boolean insurance() {
         return true;
     }
+
 
     private void done() {
         if (player.hand.total < 22) {
@@ -110,18 +119,23 @@ public class Game {
     }
 
     private String win() {
-        player.setStake(5);
-        return "You win! Total Chips " + player.getStake();
+        player.setStake(this.player.getBet().total *2);
+        String won = "You won " + this.player.getBet().total + "! Total Chips " + player.getStake();
+        messageLBL.message(won).setVisible(true);
+        return won;
     }
 
     private String loose() {
-        player.setStake(-5);
+        String lost = "You lost " + this.player.getBet().total + ". Total Chips " + player.getStake();
+        messageLBL.message(lost);;
         return "You lost. Total Chips " + player.getStake();
     }
 
     private String push() {
+        player.setStake(this.player.getBet().total);
+        String push = "You push. Total Chips " + player.getStake();
+        messageLBL.message(push).setVisible(true);;
         return "You push. Total Chips " + player.getStake();
-
     }
 
 

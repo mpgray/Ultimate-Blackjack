@@ -3,9 +3,8 @@ package blackjack;
 public class Player {
     public Hand hand = new Hand();
     private Stake stake = new Stake();
-
-
     private Bet bet = new Bet();
+
     private String userName = "PLAYER";
 
     private Deck deck;
@@ -19,7 +18,8 @@ public class Player {
     }
 
     public void clear() {
-        hand.muck();
+        this.hand.muck();
+
     }
 
     public void deal(){
@@ -43,6 +43,18 @@ public class Player {
             this.setStake(-bet);
 
             this.bet.total = bet;
+        }
+    }
+
+    public void clearBet() {
+        this.bet.total = 0;
+    }
+
+    public void addBet(double bet) {
+        if (this.getStake() >= bet) {
+            this.setStake(-bet);
+
+            this.bet.total += bet;
         }
     }
 
