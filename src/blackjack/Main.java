@@ -1,6 +1,6 @@
 package blackjack;
 
-import java.io.IOException;
+import blackjack.views.TableGUI;
 
 public class Main {
 

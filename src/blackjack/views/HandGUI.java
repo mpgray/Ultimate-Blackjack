@@ -1,7 +1,8 @@
-package blackjack;
+package blackjack.views;
+
+import blackjack.Hand;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class HandGUI extends JFrame {
 
     private List<JLabel> cardLBLs = new ArrayList<>();
 
-    HandGUI(Hand hand) {
+    public HandGUI(Hand hand) {
         this.hand = hand;
     }
 

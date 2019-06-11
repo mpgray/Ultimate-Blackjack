@@ -1,4 +1,4 @@
-package blackjack;
+package blackjack.views;
 
 import javax.swing.*;
 

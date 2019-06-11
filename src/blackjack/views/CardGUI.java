@@ -1,4 +1,6 @@
-package blackjack;
+package blackjack.views;
+
+import blackjack.Card;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +22,7 @@ public class CardGUI extends JFrame {
 
     public JLabel card(Card card, int width, int height) {
         JLabel cardLBL = new JLabel();
-        String path = "cards/" + card.face.name + "-" + card.suit.name + ".png";
+        String path = "cards/" + card.face.getName() + "-" + card.suit.getName() + ".png";
         cardLBL.setIcon(scale(createImageIcon(path), width, height));
         return cardLBL;
     }

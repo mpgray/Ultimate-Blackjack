@@ -1,5 +1,8 @@
 package blackjack;
 
+import blackjack.views.HandGUI;
+import blackjack.views.MessageGUI;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;

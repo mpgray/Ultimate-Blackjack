@@ -1,4 +1,7 @@
-package blackjack;
+package blackjack.views;
+
+import blackjack.Dealer;
+import blackjack.Player;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

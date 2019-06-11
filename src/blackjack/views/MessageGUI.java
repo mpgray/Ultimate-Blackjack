@@ -1,4 +1,4 @@
-package blackjack;
+package blackjack.views;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -7,7 +7,7 @@ import java.awt.*;
 public class MessageGUI extends JFrame {
     public  JLabel messageAlert = new JLabel();
 
-    MessageGUI() {
+    public MessageGUI() {
 
     }
 
@@ -17,7 +17,7 @@ public class MessageGUI extends JFrame {
         messageAlert.setHorizontalAlignment(JLabel.CENTER);
         messageAlert.setVerticalAlignment(JLabel.CENTER);
 
-        //messageAlert.setForeground(Color.blue);
+        messageAlert.setForeground(Color.blue);
        // messageAlert.setBackground(new Color(60,150,60));
        // messageAlert.setOpaque(true);
 
