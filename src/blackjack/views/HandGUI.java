@@ -11,6 +11,7 @@ import java.util.List;
 public class HandGUI extends JFrame {
     private Hand hand;
     private CardGUI cardGUI = new CardGUI();
+    private JLabel downCardLBL = cardGUI.downCard(90, 125);
 
     private List<JLabel> cardLBLs = new ArrayList<>();
 
@@ -18,7 +19,7 @@ public class HandGUI extends JFrame {
         this.hand = hand;
     }
 
-    public JLabel hand() {
+    public JLabel hand(int xBound, int yBound) {
         JLabel handLBL = new JLabel();
 
 
@@ -39,10 +40,26 @@ public class HandGUI extends JFrame {
             handLBL.add(cardLBLs.get(i));
         }
 
+        handLBL.setBounds(xBound,yBound, 900, 900);
         return handLBL;
     }
 
+    public JLabel dealerHand(int xBound, int yBound ){
+        downCardLBL.setBorder(BorderFactory.createEmptyBorder( 60, 0, 0, 0 ));
+        downCardLBL.setBackground(new Color(50, 100, 50));
+        downCardLBL.setOpaque(true);
+        downCardLBL.setBounds(0,0, 90, 205);
 
+        JLabel handLBL = new JLabel();
+        handLBL.add(downCardLBL);
+        handLBL.setBounds(xBound,yBound, 900, 900);
+        handLBL.add(this.hand(0, 0));
+        return handLBL;
+    }
+
+    public void toggleDownCard(boolean set) {
+
+    }
 
 
     private JLabel total() {

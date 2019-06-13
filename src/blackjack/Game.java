@@ -1,7 +1,7 @@
 package blackjack;
 
+import blackjack.views.ChatGUI;
 import blackjack.views.HandGUI;
-import blackjack.views.MessageGUI;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -14,15 +14,27 @@ public class Game {
     public Dealer dealer = new Dealer(deck);
     private List<Player> players = new ArrayList<>();
     public Player player;
+    public JLabel playerLBL = new JLabel();
+    public JLabel dealerLBL = new JLabel();
+
+    private JLayeredPane table = new JLayeredPane();
+
+    private ChatGUI chatGUI = new ChatGUI();
 
 
-    private HandGUI handGUI;
-    public MessageGUI messageLBL = new MessageGUI();;
+
+    public Message message = new Message();
 
     public Game() {
+
         this.addPlayer();
         this.player = players.get(0);
     }
+
+    public JLayeredPane getTable() {
+        return table;
+    }
+
 
     public void start(){
         this.deck.shuffle();
@@ -43,70 +55,45 @@ public class Game {
 
     private void blackJack() {
         if (this.player.hand.total == 21 && this.dealer.hand.hand.get(1).face != Card.Face.ACE && this.dealer.hand.total != 21) {
-            this.player.setStake(this.player.getBet().total * 2.5);
+            this.player.setStake(this.player.getBet().total * .5);
+
         }
     }
 
+
+
     public JLabel playerLBL() {
-        handGUI = new HandGUI(player.hand);
-        return handGUI.hand();
+        HandGUI handGUI = new HandGUI(player.hand);
+        playerLBL = handGUI.hand(300, 300);
+        return playerLBL;
     }
 
     public JLabel dealerLBL() {
-        handGUI = new HandGUI(dealer.hand);
-        return handGUI.hand();
+        HandGUI handGUI = new HandGUI(dealer.hand);
+        dealerLBL = handGUI.dealerHand(300, 10);
+        return dealerLBL;
     }
 
     public JLabel downCardLBL() {
-        handGUI = new HandGUI(dealer.hand);
+        HandGUI handGUI = new HandGUI(dealer.hand);
         return handGUI.downCard();
     }
 
-    public JLabel messageLBL(String message) {
-
-        return  messageLBL.message(message);
-    }
 
     private void addPlayer() {
         this.players.add(new Player(deck));
     }
 
-    public boolean hit() {
-        player.deal();
-        if (player.hand.total > 21) {
-            this.done();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean stay() {
-        this.done();
-        return false;
-    }
-
-    public boolean onecard() {
-        if (this.player.getBet().total <= this.player.getStake()) {
-            this.player.addBet(this.player.getBet().total);
-            this.player.deal();
-            this.done();
-        }
-        return false;
-    }
-
-    public boolean split() {
-        return false;
-    }
-
-    public boolean insurance() {
-        return true;
-    }
 
 
     private void done() {
         if (player.hand.total < 22) {
             this.dealer.dealSelf();
         }
+    }
+
+    public void bust() {
+        loose();
     }
 
     public String results() {
@@ -121,26 +108,36 @@ public class Game {
         return results;
     }
 
+    private String formatChips(double chips) {
+        if(chips % 1 == 0)
+            return "" + (int) chips;
+        return String.format("%.2f", chips) ;
+    }
+
     private String win() {
         player.setStake(this.player.getBet().total *2);
-        String won = "You won " + this.player.getBet().total + "! Total Chips " + player.getStake();
-        messageLBL.message(won).setVisible(true);
+        String won = "You won " + formatChips(this.player.getBet().total) + "! Total Chips " + formatChips(player.getStake());
+        this.message.setMessage(won);
         return won;
     }
 
     private String loose() {
-        String lost = "You lost " + this.player.getBet().total + ". Total Chips " + player.getStake();
-        messageLBL.message(lost);;
-        return "You lost. Total Chips " + player.getStake();
+        String lost = "You lost " +  formatChips(this.player.getBet().total) + " Total Chips " + formatChips(player.getStake());
+        this.message.setMessage(lost);
+        return lost;
     }
 
     private String push() {
         player.setStake(this.player.getBet().total);
         String push = "You push. Total Chips " + player.getStake();
-        messageLBL.message(push).setVisible(true);;
-        return "You push. Total Chips " + player.getStake();
+        this.message.setMessage(push);
+        return push;
     }
 
 
+
+    public ChatGUI getChatGUI() {
+        return chatGUI;
+    }
 
 }
