@@ -6,11 +6,14 @@ import blackjack.Play;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class PlayGUI {
     JLayeredPane table;
 
+    private JLabel stakeLBL;
     private JButton hitButton, dealButton, stayButton, doubleButton, splitButton, insuranceButton;
     private Game blackjack;
     private Play play;
@@ -25,26 +28,84 @@ public class PlayGUI {
         this.play = new Play(this.blackjack);
         this.hitButton();
 
+
         this.chatGUI = this.blackjack.getChatGUI();
 
     }
+
+
+
 
     private void hitButton(){
         hitButton = new JButton(" Hit ");
         hitButton.setBounds(15, 60, 100, 25);
         hitButton.addActionListener(evt -> {
             if(!this.play.hit()) {
-                this.blackjack.bust();
-                this.hide();
-                this.play.reset();
+                this.endTurn();
             }
+
             this.turn();
-            this.chatGUI.systemText(this.blackjack.player);
+            this.playerAction();
 
         });
     }
 
-    private void hide() {
+
+    private void options() {
+        this.play.options();
+        hitButton.setVisible(this.play.canHit());
+        stayButton.setVisible(this.play.canStay());
+        doubleButton.setVisible(this.play.canDouble());
+        splitButton.setVisible(this.play.canSplit());
+        insuranceButton.setVisible(this.play.canInsurance());
+    }
+
+    private void turn() {
+        this.options();
+        this.table.remove(this.blackjack.playerLBL);
+
+        this.table.invalidate();
+        this.table.revalidate();
+        this.table.repaint();
+
+        this.blackjack.updateStake();
+        this.chatGUI.systemText(this.blackjack.player);
+
+    }
+
+    private void playerAction () {
+        this.table.add(this.blackjack.playerLBL(), JLayeredPane.MODAL_LAYER);
+    }
+
+    private void playerAction (boolean onecard) {
+        this.table.add(this.blackjack.playerLBL(onecard), JLayeredPane.MODAL_LAYER);
+    }
+
+    private void dealerTurn() {
+
+
+
+        this.table.remove(this.blackjack.dealerLBL);
+
+        this.table.invalidate();
+        this.table.revalidate();
+        this.table.repaint();
+
+
+        this.table.add(this.blackjack.dealerLBL(false));
+        chatGUI.systemText(blackjack.dealer);
+
+
+    }
+
+    private void endTurn() {
+
+        this.blackjack.done();
+        this.dealerTurn();
+
+        this.chatGUI.print(this.blackjack.results());
+        dealButton.setVisible(true);
+
         hitButton.setVisible(false);
         stayButton.setVisible(false);
         doubleButton.setVisible(false);
@@ -52,50 +113,50 @@ public class PlayGUI {
         insuranceButton.setVisible(false);
     }
 
-
-
-    private void turn() {
-
-        this.table.remove(this.blackjack.playerLBL);
-
-        this.table.invalidate();
-        this.table.revalidate();
-        this.table.repaint();
-
-        this.table.add(this.blackjack.playerLBL());
-
-    }
-
     public JLabel sidePanel(){
 
 
         dealButton = new JButton(" Deal ");
         dealButton.setBounds(15, 35, 100, 25);
-        dealButton.setEnabled(false); // for testing
         dealButton.addActionListener(evt -> {
-        //    blackjack.start();
-         //   this.beginGame();
-         //   this.hand();
-         //   chatGUI.systemText(blackjack.player);
+            if (this.blackjack.player.getBet().getTotal() > 0) {
+                this.blackjack.player.bet();
+                this.blackjack.reset();
+                this.blackjack.start();
+                this.options();
+
+                chatGUI.systemText(this.blackjack.dealer);
+                chatGUI.systemText(blackjack.player);
+
+                dealButton.setVisible(false);
+                if(this.play.blackJack()) {
+                    this.endTurn();
+                    dealButton.setVisible(true);
+                    this.blackjack.message.setMessage("Blackjack!");
+                }
+            } else {
+                this.blackjack.message.setMessage("Bet table minimum to play.");
+            }
+
         });
 
         stayButton = new JButton(" Stay ");
         stayButton.setBounds(15, 85, 100, 25);
         stayButton.addActionListener(evt -> {
-        //    if(!blackjack.stay()) {
-         //       this.endTurn();
-         //   }
-         //   chatGUI.systemText(blackjack.player);
+             if(!play.stay()) {
+                this.endTurn();
+             }
+
         });
 
         doubleButton = new JButton(" Double ");
         doubleButton.setBounds(15, 110, 100, 25);
         doubleButton.addActionListener(evt -> {
-         //   if(!blackjack.onecard()){
-         //       this.endTurn();
-         //   }
-         //   this.hand();
-         //   chatGUI.systemText(blackjack.player);
+            if(!play.onecard()){
+                this.turn();
+                this.playerAction(true);
+                this.endTurn();
+            }
         });
 
         splitButton = new JButton(" Split ");
@@ -110,12 +171,12 @@ public class PlayGUI {
 
         insuranceButton = new JButton(" Insurance ");
         insuranceButton.setBounds(15, 160, 140, 25);
-        insuranceButton.setEnabled(false);
         insuranceButton.addActionListener(evt -> {
-         //   if(!blackjack.insurance()) {
-          //      this.endTurn();
-          //  }
-          //  chatGUI.systemText(blackjack.player);
+              if(!play.insurance()) {
+                  this.endTurn();
+             }
+            this.blackjack.message.setMessage("Dealer doesn't have blackjack.");
+            insuranceButton.setVisible(false);
         });
 
 
@@ -125,7 +186,7 @@ public class PlayGUI {
         sidePanel.add(doubleButton,JLayeredPane.MODAL_LAYER);
         sidePanel.add(splitButton,JLayeredPane.MODAL_LAYER);
         sidePanel.add(insuranceButton,JLayeredPane.MODAL_LAYER);
-
+        this.options();
 
         TitledBorder titled = new TitledBorder("Play");
         sidePanel.setBorder(titled);
@@ -133,5 +194,8 @@ public class PlayGUI {
 
         return sidePanel;
     }
+
+
+
 
 }

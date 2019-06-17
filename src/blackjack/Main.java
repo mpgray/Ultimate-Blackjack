@@ -1,6 +1,6 @@
 package blackjack;
 
-import blackjack.views.ChatGUI;
+import blackjack.views.BetGUI;
 import blackjack.views.PlayGUI;
 import blackjack.views.TableGUI;
 
@@ -16,7 +16,8 @@ public class Main {
 
             Game game = new Game();
             PlayGUI playGUI = new PlayGUI(game);
-            TableGUI table = new TableGUI(game, playGUI);
+            BetGUI betGui = new BetGUI(game);
+            TableGUI table = new TableGUI(game, playGUI, betGui);
 
             table.setVisible(true);
             table.run();

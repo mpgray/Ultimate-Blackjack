@@ -1,6 +1,8 @@
 package blackjack;
 
-public class Dealer {
+
+
+public class Dealer{
     public Hand hand = new Hand();
     private Deck deck;
     private boolean isHoleVisable = false;
@@ -17,13 +19,17 @@ public class Dealer {
     public void clear() {
         hand.muck();
         isHoleVisable = false;
+
     }
 
-    public void dealSelf(){
+    public void dealSelf() {
         isHoleVisable = true;
         while(hand.total < 17 || hand.ace > 0 && hand.total == 17) {
-            deal();
+
+            this.deal();
         }
+
+
     }
 
     private String holeCard() {
@@ -32,6 +38,8 @@ public class Dealer {
         }
         return "(" + hand.total + ") " + "[" + hand.hand.get(0).face.name + hand.hand.get(0).suit.value + "]";
     }
+
+
 
     @Override
     public String toString() {
