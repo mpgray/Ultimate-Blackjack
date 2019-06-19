@@ -72,14 +72,14 @@ public class BetGUI {
         betTotalLBL.setOpaque(true);
         betTotalLBL.setText("0");
         betTotalLBL.setBorder(titled);
-        betTotalLBL.setBounds(0,395,100,60);
+        betTotalLBL.setBounds(0,450,105,60);
 
     }
 
     private JButton clear(){
-        JButton clearButton = new JButton(" Clear Bet ");
-        clearButton.setFont(new Font("Arial", Font.BOLD, 16));
-        clearButton.setBounds(60, this.chipPosition + 5, 135, 40);
+        JButton clearButton = new JButton("Clear");
+        clearButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        clearButton.setBounds(120, this.chipPosition + 5, 75, 40);
         clearButton.addActionListener(evt -> {
             this.blackjack.player.getBet().clear();
             this.blackjack.updateStake();

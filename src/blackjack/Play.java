@@ -45,8 +45,13 @@ public class Play{
 
             this.blackjack.player.adjustStake(-this.blackjack.player.getBet().getOnecard());
             this.blackjack.player.deal();
+
+            return false;
+        } else {
+            this.blackjack.getChatGUI().print("Not enough chips to double.");
         }
-        return false;
+        return true;
+
     }
 
     public boolean split() {

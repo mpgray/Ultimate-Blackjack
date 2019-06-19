@@ -9,7 +9,7 @@ public class StakeGUI {
     private JLabel stakeLBL = new JLabel();
 
     public JLabel stake() {
-        this.stakeLBL.setFont(new Font("Arial", Font.BOLD, 26));
+        this.stakeLBL.setFont(new Font("Arial", Font.BOLD, 18));
         TitledBorder titled = new TitledBorder("Chips");
         this.stakeLBL.setHorizontalAlignment(JLabel.CENTER);
         this.stakeLBL.setVerticalAlignment(JLabel.CENTER);
@@ -20,7 +20,7 @@ public class StakeGUI {
         this.stakeLBL.setOpaque(true);
 
         this.stakeLBL.setBorder(titled);
-        this.stakeLBL.setBounds(0,10,195,60);
+        this.stakeLBL.setBounds(0,10,105,60);
 
         return stakeLBL;
     }
@@ -36,11 +36,11 @@ public class StakeGUI {
     }
 
     public void setText(double stake, double bet) {
-        stakeLBL.setText(stake + " Bet: " + bet);
+        stakeLBL.setText(stake + "");
     }
 
     public void setText(double stake, double bet, double onecard) {
-        stakeLBL.setText(stake + " Bet: " + bet + " Double: " + onecard);
+        stakeLBL.setText(stake + "");
     }
 
 }

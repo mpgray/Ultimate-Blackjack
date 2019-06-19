@@ -38,15 +38,14 @@ public class Player {
     }
 
     public void bet(){
-        if (this.getStake() > this.bet.getTotal()) {
+        if (this.getStake() >= this.bet.getTotal()) {
             this.adjustStake(-this.bet.getTotal());
         }
     }
 
     public void bet(double amount){
-        if (this.getStake() > amount) {
+        if (this.getStake() >= amount + this.bet.getTotal() ) {
             this.bet.setTotal(amount + this.bet.getTotal());
-         //   this.adjustStake(-this.bet.getTotal());
         }
     }
 

@@ -6,14 +6,13 @@ import blackjack.Play;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
 
 
 public class PlayGUI {
     JLayeredPane table;
 
-    private JLabel stakeLBL;
+    private JLabel hideBetLBL = new JLabel();
     private JButton hitButton, dealButton, stayButton, doubleButton, splitButton, insuranceButton;
     private Game blackjack;
     private Play play;
@@ -33,7 +32,13 @@ public class PlayGUI {
 
     }
 
+    private void canBet(boolean showBets) {
 
+        hideBetLBL.setBounds(800,0,200,575);
+        hideBetLBL.setOpaque(!showBets);
+        hideBetLBL.setBackground(new Color(50, 100, 50));
+        this.table.add(hideBetLBL, JLayeredPane.MODAL_LAYER);
+    }
 
 
     private void hitButton(){
@@ -83,8 +88,6 @@ public class PlayGUI {
 
     private void dealerTurn() {
 
-
-
         this.table.remove(this.blackjack.dealerLBL);
 
         this.table.invalidate();
@@ -102,6 +105,7 @@ public class PlayGUI {
 
         this.blackjack.done();
         this.dealerTurn();
+        this.canBet(true);
 
         this.chatGUI.print(this.blackjack.results());
         dealButton.setVisible(true);
@@ -119,12 +123,15 @@ public class PlayGUI {
         dealButton = new JButton(" Deal ");
         dealButton.setBounds(15, 35, 100, 25);
         dealButton.addActionListener(evt -> {
-            if (this.blackjack.player.getBet().getTotal() > 0) {
+            if(this.blackjack.player.getBet().getTotal() > this.blackjack.player.getStake()){
+                this.blackjack.player.getBet().clear();
+                this.blackjack.getChatGUI().print("Not enough chips.");
+            } else if (this.blackjack.player.getBet().getTotal() > 0) {
                 this.blackjack.player.bet();
                 this.blackjack.reset();
                 this.blackjack.start();
                 this.options();
-
+                this.canBet(false);
                 chatGUI.systemText(this.blackjack.dealer);
                 chatGUI.systemText(blackjack.player);
 
