@@ -5,6 +5,7 @@ public class Player {
     private Stake stake = new Stake();
     private Bet bet = new Bet();
 
+
     private String userName = "PLAYER";
 
     private Deck deck;
@@ -30,34 +31,38 @@ public class Player {
         return stake.getTotal();
     }
 
-    public void setStake(double adjustment) {
+
+
+    public void adjustStake(double adjustment) {
         this.stake.setTotal(adjustment + this.getStake());
+    }
+
+    public void bet(){
+        if (this.getStake() >= this.bet.getTotal()) {
+            this.adjustStake(-this.bet.getTotal());
+        }
+    }
+
+    public void bet(double amount){
+        if (this.getStake() >= amount + this.bet.getTotal() ) {
+            this.bet.setTotal(amount + this.bet.getTotal());
+        }
     }
 
     public Bet getBet() {
         return bet;
     }
 
-    public void setBet(double bet) {
-        if (this.getStake() >= bet) {
-            this.setStake(-bet);
 
-            this.bet.total = bet;
-        }
-    }
 
-    public void clearBet() {
-        this.bet.total = 0;
-    }
-
-    public void addBet(double bet) {
+/*    public void addBet(double bet) {
         if (this.getStake() >= bet) {
             this.setStake(-bet);
 
             this.bet.total += bet;
         }
     }
-
+*/
     @Override
     public String toString() {
         if (hand.hand.size() > 0) {

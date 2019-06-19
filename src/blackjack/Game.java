@@ -1,7 +1,8 @@
 package blackjack;
 
+import blackjack.views.ChatGUI;
 import blackjack.views.HandGUI;
-import blackjack.views.MessageGUI;
+import blackjack.views.StakeGUI;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -14,20 +15,33 @@ public class Game {
     public Dealer dealer = new Dealer(deck);
     private List<Player> players = new ArrayList<>();
     public Player player;
+    public JLabel playerLBL = new JLabel();
+    public JLabel dealerLBL = new JLabel();
+
+    private JLayeredPane table = new JLayeredPane();
+
+    private ChatGUI chatGUI = new ChatGUI();
+    private StakeGUI stakeGUI = new StakeGUI();
 
 
-    private HandGUI handGUI;
-    public MessageGUI messageLBL = new MessageGUI();;
+    public Message message = new Message();
 
     public Game() {
+
         this.addPlayer();
         this.player = players.get(0);
     }
+
+    public JLayeredPane getTable() {
+        return table;
+    }
+
 
     public void start(){
         this.deck.shuffle();
         this.dealer.clear();
         this.player.clear();
+        this.player.getBet().clearOnecard();
 
 
         // dealer gets 2 cards
@@ -38,107 +52,137 @@ public class Game {
         this.player.deal();
         this.player.deal();
 
-        this.blackJack();
+        this.updateStake();
+
+        this.table.add(this.playerLBL(),JLayeredPane.MODAL_LAYER);
+        this.table.add(this.dealerLBL(true),JLayeredPane.MODAL_LAYER);
+
     }
 
-    private void blackJack() {
-        if (this.player.hand.total == 21 && this.dealer.hand.hand.get(1).face != Card.Face.ACE && this.dealer.hand.total != 21) {
-            this.player.setStake(this.player.getBet().total * 2.5);
-        }
-    }
+
+
 
     public JLabel playerLBL() {
-        handGUI = new HandGUI(player.hand);
-        return handGUI.hand();
+        HandGUI handGUI = new HandGUI(this.player.hand);
+        playerLBL = handGUI.hand(300, 300);
+        return playerLBL;
     }
 
-    public JLabel dealerLBL() {
-        handGUI = new HandGUI(dealer.hand);
-        return handGUI.hand();
+    public JLabel playerLBL(boolean onecard) {
+        HandGUI handGUI = new HandGUI(this.player.hand);
+        playerLBL = handGUI.hand(300, 300, onecard);
+        return playerLBL;
     }
 
-    public JLabel downCardLBL() {
-        handGUI = new HandGUI(dealer.hand);
-        return handGUI.downCard();
+    public JLabel dealerLBL(boolean downCard) {
+        HandGUI handGUI = new HandGUI(this.dealer.hand);
+        dealerLBL = handGUI.dealerHand(300, 10, downCard);
+
+        return dealerLBL;
     }
 
-    public JLabel messageLBL(String message) {
+    public void reset() {
+        this.message.clear();
 
-        return  messageLBL.message(message);
+
+        this.table.remove(this.dealerLBL);
+        this.table.remove(this.playerLBL);
+
+        this.table.invalidate();
+        this.table.revalidate();
+        this.table.repaint();
+
     }
 
     private void addPlayer() {
         this.players.add(new Player(deck));
     }
 
-    public boolean hit() {
-        player.deal();
-        if (player.hand.total > 21) {
-            this.done();
-            return false;
-        }
-        return true;
-    }
-
-    public boolean stay() {
-        this.done();
-        return false;
-    }
-
-    public boolean onecard() {
-        if (this.player.getBet().total <= this.player.getStake()) {
-            this.player.addBet(this.player.getBet().total);
-            this.player.deal();
-            this.done();
-        }
-        return false;
-    }
-
-    public boolean split() {
-        return false;
-    }
-
-    public boolean insurance() {
-        return true;
-    }
 
 
-    private void done() {
+    public void done() {
         if (player.hand.total < 22) {
             this.dealer.dealSelf();
         }
     }
 
+    public void bust() {
+        loose();
+    }
+
     public String results() {
         String results;
-        if(player.hand.total == dealer.hand.total) {
+        if (player.hand.total == 21 && player.hand.hand.size() ==2) {
+            results = blackjack();
+        } else if(player.hand.total == dealer.hand.total) {
             results = push();
         } else if((player.hand.total > dealer.hand.total || dealer.hand.total > 21) && player.hand.total < 22)  {
             results = win();
         } else {
             results = loose();
         }
+        this.message.setMessage(results);
+
         return results;
     }
 
+    public void updateStake(){
+
+        if (this.player.getBet().getOnecard() > 0) {
+            this.getStakeGUI().setText(this.player.getStake(), this.player.getBet().getTotal(), this.player.getBet().getOnecard());
+        } else {
+            this.getStakeGUI().setText(this.player.getStake(), this.player.getBet().getTotal());
+        }
+
+    }
+
+    public void updateStake(double stake){
+        this.player.adjustStake(stake);
+        if (this.player.getBet().getOnecard() > 0) {
+            this.getStakeGUI().setText(this.player.getStake(), this.player.getBet().getTotal(), this.player.getBet().getOnecard());
+        } else {
+            this.getStakeGUI().setText(this.player.getStake(), this.player.getBet().getTotal());
+        }
+
+    }
+
+    private String formatChips(double chips) {
+        if(chips % 1 == 0)
+            return "" + (int) chips;
+        return String.format("$%.2f", chips) ;
+    }
+
+    private String blackjack() {
+        this.updateStake(this.player.getBet().getTotal() * 2.5);
+        String blackjack =  "Blackjack! You won " + formatChips(this.player.getBet().all() * 1.5) + "!";
+        return blackjack;
+    }
+
     private String win() {
-        player.setStake(this.player.getBet().total *2);
-        String won = "You won " + this.player.getBet().total + "! Total Chips " + player.getStake();
-        messageLBL.message(won).setVisible(true);
+        this.updateStake(this.player.getBet().all() *2);
+        String won =  "You won " + formatChips(this.player.getBet().all()) + "! Dealer has " + this.dealer.hand.total;
         return won;
     }
 
     private String loose() {
-        String lost = "You lost " + this.player.getBet().total + ". Total Chips " + player.getStake();
-        messageLBL.message(lost);;
-        return "You lost. Total Chips " + player.getStake();
+        String lost = "You lost " +  formatChips(this.player.getBet().all()) +  ". Dealer has " + this.dealer.hand.total;
+        return lost;
     }
 
     private String push() {
-        player.setStake(this.player.getBet().total);
-        String push = "You push. Total Chips " + player.getStake();
-        messageLBL.message(push).setVisible(true);;
-        return "You push. Total Chips " + player.getStake();
+        this.updateStake(this.player.getBet().all());
+        String push = "You push. Dealer has " + this.dealer.hand.total;
+        return push;
+    }
+
+
+
+    public ChatGUI getChatGUI() {
+        return chatGUI;
+    }
+
+    public StakeGUI getStakeGUI() {
+        return stakeGUI;
     }
 
 
