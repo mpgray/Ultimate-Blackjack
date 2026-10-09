@@ -101,7 +101,11 @@ public class Game {
 
 
     public void done() {
-        if (player.hand.total < 22) {
+        // The dealer only draws when the result still depends on it: not after a
+        // player bust, and not against a natural blackjack (which a drawn 21 cannot beat).
+        if (Rules.isBust(player.hand) || Rules.isBlackjack(player.hand)) {
+            this.dealer.reveal();
+        } else {
             this.dealer.dealSelf();
         }
     }
@@ -111,16 +115,12 @@ public class Game {
     }
 
     public String results() {
-        String results;
-        if (player.hand.total == 21 && player.hand.hand.size() ==2) {
-            results = blackjack();
-        } else if(player.hand.total == dealer.hand.total) {
-            results = push();
-        } else if((player.hand.total > dealer.hand.total || dealer.hand.total > 21) && player.hand.total < 22)  {
-            results = win();
-        } else {
-            results = loose();
-        }
+        String results = switch (Rules.outcome(player.hand, dealer.hand)) {
+            case BLACKJACK -> blackjack();
+            case WIN -> win();
+            case PUSH -> push();
+            case LOSE -> loose();
+        };
         this.message.setMessage(results);
 
         return results;
@@ -152,26 +152,30 @@ public class Game {
         return String.format("$%.2f", chips) ;
     }
 
+    private String dealerTotal() {
+        return Rules.isBlackjack(this.dealer.hand) ? "blackjack" : "" + this.dealer.hand.total;
+    }
+
     private String blackjack() {
-        this.updateStake(this.player.getBet().getTotal() * 2.5);
+        this.updateStake(Rules.payout(Rules.Outcome.BLACKJACK, this.player.getBet().all()));
         String blackjack =  "Blackjack! You won " + formatChips(this.player.getBet().all() * 1.5) + "!";
         return blackjack;
     }
 
     private String win() {
-        this.updateStake(this.player.getBet().all() *2);
-        String won =  "You won " + formatChips(this.player.getBet().all()) + "! Dealer has " + this.dealer.hand.total;
+        this.updateStake(Rules.payout(Rules.Outcome.WIN, this.player.getBet().all()));
+        String won =  "You won " + formatChips(this.player.getBet().all()) + "! Dealer has " + dealerTotal();
         return won;
     }
 
     private String loose() {
-        String lost = "You lost " +  formatChips(this.player.getBet().all()) +  ". Dealer has " + this.dealer.hand.total;
+        String lost = "You lost " +  formatChips(this.player.getBet().all()) +  ". Dealer has " + dealerTotal();
         return lost;
     }
 
     private String push() {
-        this.updateStake(this.player.getBet().all());
-        String push = "You push. Dealer has " + this.dealer.hand.total;
+        this.updateStake(Rules.payout(Rules.Outcome.PUSH, this.player.getBet().all()));
+        String push = "You push. Dealer has " + dealerTotal();
         return push;
     }
 

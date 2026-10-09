@@ -11,20 +11,21 @@ public class Main {
     public static void main(String[] args) {
 
 
-        try {
-            JLayeredPane contentPane = new JLayeredPane();
+        // Swing components must be created on the event dispatch thread.
+        SwingUtilities.invokeLater(() -> {
+            try {
+                Game game = new Game();
+                PlayGUI playGUI = new PlayGUI(game);
+                BetGUI betGui = new BetGUI(game);
+                TableGUI table = new TableGUI(game, playGUI, betGui);
 
-            Game game = new Game();
-            PlayGUI playGUI = new PlayGUI(game);
-            BetGUI betGui = new BetGUI(game);
-            TableGUI table = new TableGUI(game, playGUI, betGui);
+                table.setVisible(true);
+                table.run();
 
-            table.setVisible(true);
-            table.run();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
 
     }
 }

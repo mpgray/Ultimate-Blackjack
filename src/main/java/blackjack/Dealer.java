@@ -23,13 +23,20 @@ public class Dealer{
     }
 
     public void dealSelf() {
-        isHoleVisable = true;
-        while(hand.total < 17 || hand.ace > 0 && hand.total == 17) {
-
+        reveal();
+        while (Rules.dealerShouldHit(hand)) {
             this.deal();
         }
+    }
 
+    /** Turns the hole card over without drawing, e.g. when the player has already busted. */
+    public void reveal() {
+        isHoleVisable = true;
+    }
 
+    /** The face-up card; the hole card is index 0. */
+    public Card upCard() {
+        return hand.hand.get(1);
     }
 
     private String holeCard() {

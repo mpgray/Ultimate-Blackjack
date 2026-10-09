@@ -58,12 +58,15 @@ public class Play{
         return false;
     }
 
+    /**
+     * A player blackjack ends the round at once unless the dealer shows an ace,
+     * in which case the player is still offered insurance first. A dealer
+     * blackjack in the hole no longer lets the player keep hitting a natural:
+     * the round ends and {@link Rules#outcome} scores it as a push.
+     */
     public boolean blackJack() {
-        if (this.blackjack.player.hand.total == 21 && this.blackjack.dealer.hand.hand.get(1).face != Card.Face.ACE && this.blackjack.dealer.hand.total != 21) {
-            return true;
-        }
-
-        return false;
+        return Rules.isBlackjack(this.blackjack.player.hand)
+                && this.blackjack.dealer.upCard().face != Card.Face.ACE;
     }
 
 
@@ -81,7 +84,7 @@ public class Play{
             if (hand.get(0).value == hand.get(1).value) {
                 split = true;
             }
-            if (this.blackjack.dealer.hand.hand.get(1).face == Card.Face.ACE) {
+            if (this.blackjack.dealer.upCard().face == Card.Face.ACE) {
                 insurance = true;
             }
             this.onecard = true;
@@ -113,15 +116,26 @@ public class Play{
         return insurance;
     }
 
+    public double insuranceCost() {
+        return Rules.insuranceCost(this.blackjack.player.getBet().getTotal());
+    }
+
+    public boolean canAffordInsurance() {
+        return insuranceCost() <= this.blackjack.player.getStake();
+    }
+
+    /**
+     * Takes insurance. Returns false when the dealer has blackjack and the round
+     * is over; the insurance then pays 2:1, which offsets the lost main bet.
+     * (It used to clear the bet without paying anything, so an insured player
+     * still lost the whole wager.)
+     */
     public boolean insurance() {
-        double bet = this.blackjack.player.getBet().getTotal();
-        double insurance = bet / 2;
-        if (this.blackjack.dealer.hand.total == 21) {
-            this.blackjack.player.getBet().clear();
-            return false;
-        }
+        double insurance = insuranceCost();
         this.blackjack.player.adjustStake(-insurance);
-        return true;
+        boolean dealerBlackjack = Rules.isBlackjack(this.blackjack.dealer.hand);
+        this.blackjack.player.adjustStake(Rules.insurancePayout(insurance, dealerBlackjack));
+        return !dealerBlackjack;
     }
 
 }

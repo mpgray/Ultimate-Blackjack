@@ -137,9 +137,9 @@ public class PlayGUI {
 
                 dealButton.setVisible(false);
                 if(this.play.blackJack()) {
+                    // endTurn() shows the result, including the payout or a push
+                    // against a dealer blackjack; don't overwrite it.
                     this.endTurn();
-                    dealButton.setVisible(true);
-                    this.blackjack.message.setMessage("Blackjack!");
                 }
             } else {
                 this.blackjack.message.setMessage("Bet table minimum to play.");
@@ -179,10 +179,18 @@ public class PlayGUI {
         insuranceButton = new JButton(" Insurance ");
         insuranceButton.setBounds(15, 160, 140, 25);
         insuranceButton.addActionListener(evt -> {
-              if(!play.insurance()) {
-                  this.endTurn();
-             }
-            this.blackjack.message.setMessage("Dealer doesn't have blackjack.");
+            if (!play.canAffordInsurance()) {
+                this.chatGUI.print("Not enough chips for insurance.");
+                return;
+            }
+            double insurance = play.insuranceCost();
+            if (!play.insurance()) {
+                this.endTurn();
+                this.chatGUI.print("Dealer has blackjack. Insurance pays " + (insurance * 2) + ".");
+            } else {
+                this.blackjack.updateStake();
+                this.blackjack.message.setMessage("Dealer doesn't have blackjack.");
+            }
             insuranceButton.setVisible(false);
         });
 

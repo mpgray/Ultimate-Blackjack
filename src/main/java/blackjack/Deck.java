@@ -25,7 +25,13 @@ public class Deck {
         }
     }
 
+    /**
+     * Shuffles all 52 cards back together and starts dealing from a full deck.
+     * Resetting the count matters: without it a round started part-way through
+     * the count would reshuffle mid-hand and could deal a card already on the table.
+     */
     public void shuffle() {
+        left = 52;
         Random rand = ThreadLocalRandom.current();
         for (int i = deck.length - 1; i > 0; i--)
         {
@@ -41,11 +47,15 @@ public class Deck {
 
         if (left == 0) {
             shuffle();
-            left = 52;
         }
         Card drew = deck[--left];
 
         return drew;
+    }
+
+    /** Cards left to deal before the deck reshuffles itself. */
+    public int remaining() {
+        return left;
     }
 
 
